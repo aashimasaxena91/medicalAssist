@@ -1,7 +1,7 @@
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 
-export default function Navbar() {
+export default function AppNavbar() {
   const navigate = useNavigate();
   const storedUser = localStorage.getItem('user');
   const user = storedUser ? JSON.parse(storedUser) : null;
