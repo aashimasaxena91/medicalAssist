@@ -1,20 +1,42 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import api from '../api';
 
 export default function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState('patient'); // 'doctor' or 'patient'
+  const [role, setRole] = useState('patient');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ name, email, password, role }); // Connect backend later
+    setError('');
+
+    try {
+      const res = await api.post('/auth/register', {
+        name,
+        email,
+        password,
+        role,
+      });
+
+      console.log('Register success:', res.data);
+
+      localStorage.setItem('token', res.data.token);
+
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed');
+    }
   };
 
   return (
     <div className="container mt-5" style={{ maxWidth: '500px' }}>
       <h2 className="mb-4 text-center">Register</h2>
+      {error && <div className="alert alert-danger">{error}</div>}
+
       <form onSubmit={handleSubmit}>
         <div className="form-group mb-3">
           <label>Full Name</label>
