@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import api from '../api';
+import { Container, Form, Button, Alert } from 'react-bootstrap';
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -22,10 +23,9 @@ export default function Register() {
         role,
       });
 
-      console.log('Register success:', res.data);
-
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data));
+
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
@@ -33,67 +33,61 @@ export default function Register() {
   };
 
   return (
-    <div className="container mt-5" style={{ maxWidth: '500px' }}>
-      <h2 className="mb-4 text-center">Register</h2>
-      {error && <div className="alert alert-danger">{error}</div>}
+    <Container style={{ maxWidth: '500px' }} className="mt-5">
+      <h2 className="text-center mb-4">Register</h2>
 
-      <form onSubmit={handleSubmit}>
-        <div className="form-group mb-3">
-          <label>Full Name</label>
-          <input
+      {error && <Alert variant="danger">{error}</Alert>}
+
+      <Form onSubmit={handleSubmit}>
+        <Form.Group controlId="name" className="mb-3">
+          <Form.Label>Full Name</Form.Label>
+          <Form.Control
             type="text"
-            className="form-control"
             placeholder="Enter full name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
           />
-        </div>
+        </Form.Group>
 
-        <div className="form-group mb-3">
-          <label>Email address</label>
-          <input
+        <Form.Group controlId="email" className="mb-3">
+          <Form.Label>Email address</Form.Label>
+          <Form.Control
             type="email"
-            className="form-control"
             placeholder="Enter email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-        </div>
+        </Form.Group>
 
-        <div className="form-group mb-3">
-          <label>Select Role</label>
-          <select
-            className="form-select"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-          >
+        <Form.Group controlId="role" className="mb-3">
+          <Form.Label>Select Role</Form.Label>
+          <Form.Select value={role} onChange={(e) => setRole(e.target.value)}>
             <option value="patient">Patient</option>
             <option value="doctor">Doctor</option>
-          </select>
-        </div>
+          </Form.Select>
+        </Form.Group>
 
-        <div className="form-group mb-3">
-          <label>Password</label>
-          <input
+        <Form.Group controlId="password" className="mb-3">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
             type="password"
-            className="form-control"
             placeholder="Enter password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-        </div>
+        </Form.Group>
 
-        <button type="submit" className="btn btn-success w-100">
+        <Button type="submit" variant="success" className="w-100">
           Register
-        </button>
+        </Button>
+      </Form>
 
-        <p className="mt-3 text-center">
-          Already have an account? <Link to="/">Login here</Link>
-        </p>
-      </form>
-    </div>
+      <p className="mt-3 text-center">
+        Already have an account? <Link to="/">Login</Link>
+      </p>
+    </Container>
   );
 }
